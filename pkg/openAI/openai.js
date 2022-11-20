@@ -14,11 +14,9 @@ export default class OpenAIInterface {
 		});
 		const url = response.data.data[0].url;
 		const utils = new Utilities();
-		const date = new Date().getTime();
 		let title = await this.generateTitle(prompt);
-		title = title.replace(/\n/g, "");
-		title += `-${date}`;
-		utils.writeToDisk(url, title);
+		title = await utils.tagTitle(title);
+		await utils.writeToDisk(url, title);
 		return url;
 	}
 

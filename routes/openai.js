@@ -32,8 +32,12 @@ class openAIRouter {
 			res.status(400).send("Bad request: prompt is empty");
 			return;
 		}
-		const url = await this.openAII.getPhoto(prompt, size, n);
-		res.status(200).json({ url: url });
+		try {
+			const url = await this.openAII.getPhoto(prompt, size, n);
+			res.status(200).json({ url: url });
+		} catch (err) {
+			res.status(500).send(err);
+		}
 	}
 }
 

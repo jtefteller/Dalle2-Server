@@ -14,4 +14,12 @@ export default class Utilities {
 		filename = this.publicPath + filename + ".jpg";
 		fs.writeFileSync(filename, buffer);
 	}
+
+	tagTitle(title) {
+		const date = new Date().getTime();
+		title = title.replace(/\n/g, "");
+		title = title.replace(/'/g, "");
+		title += `-${date}`;
+		return title;
+	}
 }
