@@ -1,0 +1,29 @@
+UI SETUP
+------------------
+
+
+BACKEND SETUP
+------------------
+install node v18.12.1
+https://nodejs.org/en/download/
+
+mkdir DalleApp
+save api key in dotenv file
+
+npm init
+enter all the way thru
+
+install deps
+	-express
+	-openai
+	-dotenv
+
+package.json module
+
+//design package 
+touch index.js
+
+//design routes
+mkdir routes	
+touch openai.js
+
