@@ -2,6 +2,7 @@ import express from "express";
 import morgan from "morgan";
 import Server from "./pkg/server/server.js";
 import openAIRouter from "./routes/openai.js";
+import mainRouter from "./routes/main.js";
 
 const app = express();
 const logger = morgan("combined");
@@ -16,4 +17,5 @@ if (process.env.NODE_ENV === "production") {
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use("/", new mainRouter(logger).init());
 app.use("/openai", new openAIRouter(logger).init());

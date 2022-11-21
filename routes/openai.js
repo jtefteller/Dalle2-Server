@@ -29,14 +29,14 @@ class openAIRouter {
 		const size = req.body.size || "1024x1024";
 		const n = req.body.n || 1;
 		if (prompt == "" || !prompt) {
-			res.status(400).send("Bad request: prompt is empty");
+			res.status(400).json({ error: "Bad request: prompt is empty" });
 			return;
 		}
 		try {
 			const url = await this.openAII.getPhoto(prompt, size, n);
-			res.status(200).json({ url: url });
+			res.status(200).json({ url: url, error: null });
 		} catch (err) {
-			res.status(500).send(err);
+			res.status(500).json({ error: err });
 		}
 	}
 }
