@@ -24,4 +24,4 @@ touch index.js
 mkdir routes	
 touch openai.js
 
- curl -X POST localhost:3000/openai -H "Content-Type: application/json" --data '{"prompt":"futuristic city of rome, 8k, photorealism"}'
+ curl -X POST localhost:3000/openai -H "Content-Type: application/json" --data '{"prompt":"A concept art painting of the jungle, by greg rutkowskit, trending on artstation"}'

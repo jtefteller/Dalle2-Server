@@ -19,6 +19,7 @@ export default class Utilities {
 		const date = new Date().getTime();
 		title = title.replace(/\n/g, "");
 		title = title.replace(/'/g, "");
+		title = title.replace(/"/g, "");
 		title += `-${date}`;
 		return title;
 	}
