@@ -11,7 +11,9 @@
 	<nav class="sticky top-0 z-40 w-full backdrop-blur flex-none transition-colors border-b border-slate-900/10 text-white font-bold bg-slate-700 ">
 		<div class="max-w-7xl mx-auto ">
 			<div class="flex justify-between py-4 mx-4 text-xl">
-				<div>Logo</div>
+				<div>
+					<a class="mr-2 hover:text-zinc-300" href="#">Logo</a>
+				</div>
 				<div>
 					<a class="mr-2 hover:text-zinc-300" href="https://openai.com/dall-e-2/">Dalle2</a>
 				</div>
@@ -41,6 +43,10 @@
 	<div class="max-w-7xl mx-auto">
 		<div class="mx-4">	
 			<div class="py-4">
+				<div id="placeholder-grid" class="text-center min-w-full">
+					<h1 class="text-4xl">No photos available</h1>
+					<div class="min-h-[500px]"></div>
+				</div>
 				<div id="results-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4"></div>
 			</div>
 		</div>
@@ -55,94 +61,10 @@
 			</div>
 		</div>
 	</footer>
+	<script src="./script.js"></script>
 	<script>
-		document.onload = makeGrid();
-
-		const generateButton = document.getElementById('generate');
-		generateButton.addEventListener('click', generatePhoto)
-
-		async function generatePhoto (){
-			const photoInput = document.querySelector('#photo-input');
-			const loading = document.getElementById('loading');
-			const text = photoInput.value;
-			photoInput.value = '';
-			loading.classList.remove('hidden');
-			const response = await fetch('/openai', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({prompt: text})
-			});
-			const data = await response.json();
-			if(data.error != null){
-				message(`Error: ${data.error}`, false);
-				return
-			}else{
-				await makeGrid();
-			}
-			await loading.classList.add('hidden');
-		}
-
-		async function fetchPhotos (){
-			const res = await fetch("/photos", {
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-				},
-			});
-			const photos = await res.json();
-			return photos;
-		}
-
-		async function makeGrid () {
-			const photos = await fetchPhotos();
-			if(photos.error != null){
-				message(`Error: ${photos.error}`, false);
-				return
-			}
-			let fileDates = photos.files.map(file => Number(file.split('-')[1].replace('.jpg', '')));
-			fileDates = fileDates.sort((a, b) => b - a);
-			const files = []
-			for(let i = 0; i < fileDates.length; i++){
-				for(let j = 0; j < photos.files.length; j++){
-					if(photos.files[j].includes(fileDates[i])){
-						files.push(photos.files[j]);
-						break;
-					}
-				}
-			}
-			const grid = document.getElementById("results-grid");
-			grid.innerHTML = '';
-			files.forEach(photo => {
-				const img = document.createElement("img");
-				img.src = "./assets/" + photo;
-				img.classList.add("border-b-8", "border-emerald-700", "hover:border-emerald-500", "rounded", "ring-1");
-				grid.appendChild(img);
-			});
-		}
-
-		function message(message, success){
-			const messageContainer = document.getElementById('message-container');
-			const errorDiv = document.createElement('div');
-			const innerDiv = document.createElement('div');
-			const textDiv = document.createElement('div');
-			innerDiv.classList.add('flex','justify-center','items-center','text-center','py-2','text-xl');
-			textDiv.classList.add('text-white');
-			textDiv.innerText = `${message}`;
-			innerDiv.appendChild(textDiv);
-			errorDiv.classList.add("bg-red-400", "rounded", "mx-4");
-			messageContainer.appendChild(errorDiv);
-			errorDiv.appendChild(innerDiv);
-			errorDiv.classList.add("animate-fade")
-			
-
-			//wait 5 seconds and remove error
-			setTimeout(() => {
-				messageContainer.removeChild(errorDiv);
-			}, 5000);
-		}
-
+		const htmlFactory = new HTMLFactory();	
+		htmlFactory.init();
 	</script>
 </body>
 </html>
