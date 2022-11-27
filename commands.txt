@@ -3,25 +3,18 @@ BACKEND SETUP
 install node v18.12.1
 https://nodejs.org/en/download/
 
-mkdir DalleApp
+get api key from https://openai.com/api/
 save api key in dotenv file
 
 npm init
-enter all the way thru
+npm install express openai dotenv morgan
+npm install -D tailwindcss
+npx tailwindcss init
 
-install deps
-	-express
-	-openai
-	-dotenv
-	-morgan
+make sure package.json "type": "module" is set
 
-package.json module
+// Test API
+curl -X POST localhost:3000/openai -H "Content-Type: application/json" --data '{"prompt":"A concept art painting of the jungle, by greg rutkowskit, trending on artstation"}'
 
-//design package 
-touch index.js
-
-//design routes
-mkdir routes	
-touch openai.js
-
- curl -X POST localhost:3000/openai -H "Content-Type: application/json" --data '{"prompt":"A concept art painting of the jungle, by greg rutkowskit, trending on artstation"}'
+// Tailwind compiler
+npx tailwindcss -i ./public/global.css -o ./public/dist/output.css --watch

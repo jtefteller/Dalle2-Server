@@ -2,30 +2,13 @@ class HTMLFactory {
 	constructor() {}
 	init() {
 		const generateButton = document.getElementById("generate");
-		generateButton.addEventListener("click", this.generatePhoto);
+		generateButton.addEventListener(
+			"click",
+			function () {
+				this.generatePhoto();
+			}.bind(this)
+		);
 		this.makeGrid();
-	}
-	async generatePhoto() {
-		const photoInput = document.querySelector("#photo-input");
-		const loading = document.getElementById("loading");
-		const text = photoInput.value;
-		photoInput.value = "";
-		loading.classList.remove("hidden");
-		const response = await fetch("/openai", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({ prompt: text }),
-		});
-		const data = await response.json();
-		if (data.error != null) {
-			this.message(`Error: ${data.error}`, false);
-			return;
-		} else {
-			await this.makeGrid();
-		}
-		await loading.classList.add("hidden");
 	}
 
 	async fetchPhotos() {
@@ -37,6 +20,17 @@ class HTMLFactory {
 		});
 		const photos = await res.json();
 		return photos;
+	}
+
+	async deletePhoto(id) {
+		const res = await fetch(`/photo/${id}`, {
+			method: "DELETE",
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+		const message = await res.json();
+		return message;
 	}
 
 	async makeGrid() {
@@ -60,23 +54,80 @@ class HTMLFactory {
 		}
 		const grid = document.getElementById("results-grid");
 		const pGrid = document.getElementById("placeholder-grid");
-		pGrid.remove();
+		if (pGrid != null) {
+			pGrid.remove();
+		}
 		grid.innerHTML = "";
 		files.forEach((photo) => {
+			const photoDiv = document.createElement("div");
 			const img = document.createElement("img");
+			const x = document.createElement("div");
+			x.textContent = "X";
+			x.classList.add(
+				"text-xl",
+				"text-red-500",
+				"absolute",
+				"top-0",
+				"right-0",
+				"m-2",
+				"cursor-pointer",
+				"z-10"
+			);
+			x.setAttribute("id", photo);
+			x.addEventListener(
+				"click",
+				async function (e) {
+					const id = e.target.id;
+					console.log(id);
+					const message = await this.deletePhoto(id);
+					if (message.error != null) {
+						this.message(`Error: ${message.error}`);
+						return;
+					}
+					await this.makeGrid();
+				}.bind(this)
+			);
+
 			img.src = "./assets/" + photo;
-			img.classList.add(
+			photoDiv.classList.add(
 				"border-b-8",
 				"border-emerald-700",
 				"hover:border-emerald-500",
 				"rounded",
-				"ring-1"
+				"ring-1",
+				"relative"
 			);
-			grid.appendChild(img);
+			photoDiv.appendChild(img);
+			photoDiv.appendChild(x);
+
+			grid.appendChild(photoDiv);
 		});
 	}
 
-	message(message, success) {
+	async generatePhoto() {
+		const photoInput = document.querySelector("#photo-input");
+		const loading = document.getElementById("loading");
+		const text = photoInput.value;
+		photoInput.value = "";
+		loading.classList.remove("hidden");
+		const response = await fetch("/openai", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ prompt: text }),
+		});
+		const data = await response.json();
+		if (data.error != null) {
+			this.message(`Error: ${data.error}`, false);
+			loading.classList.add("hidden");
+			return;
+		}
+		await this.makeGrid();
+		await loading.classList.add("hidden");
+	}
+
+	message(message) {
 		const messageContainer = document.getElementById("message-container");
 		const errorDiv = document.createElement("div");
 		const innerDiv = document.createElement("div");

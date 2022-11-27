@@ -33,6 +33,30 @@ export default class mainRouter {
 			});
 		});
 
+		this.router.delete("/photo/:id", (req, res) => {
+			fs.readdir(path.join(this.publicPath, "assets/"), (err, files) => {
+				if (err) {
+					res.status(500).json({ message: "", error: err });
+					return;
+				}
+				const jpgs = files.filter((file) => {
+					return file.endsWith(".jpg");
+				});
+				jpgs.forEach((file) => {
+					if (file.includes(req.params.id)) {
+						fs.unlink(`${this.publicPath}assets/${file}`, (err) => {
+							if (err) {
+								res.status(500).json({ message: "", error: err });
+								return;
+							}
+							res.status(200).json({ message: "success", error: null });
+							return;
+						});
+					}
+				});
+			});
+		});
+
 		this.router.get("*", (req, res) => {
 			res.status(404).send("404: Page not found");
 		});
