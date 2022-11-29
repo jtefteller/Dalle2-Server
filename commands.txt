@@ -14,7 +14,7 @@ npx tailwindcss init
 make sure package.json "type": "module" is set
 
 // Test API
-curl -X POST localhost:3000/openai -H "Content-Type: application/json" --data '{"prompt":"A concept art painting of the jungle, by greg rutkowskit, trending on artstation"}'
+curl -X POST localhost:3000/openai -H "Content-Type: application/json" --data '{"prompt":"A concept art painting of a jungle, by greg rutkowski, trending on artstation"}'
 
 // Tailwind compiler
 npx tailwindcss -i ./public/global.css -o ./public/dist/output.css --watch

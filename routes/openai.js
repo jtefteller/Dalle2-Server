@@ -19,12 +19,12 @@ class openAIRouter {
 		this.router.use(express.json());
 		this.router.use(express.urlencoded({ extended: true }));
 		this.router.post("/", async (req, res) => {
-			await this.postRoute(req, res);
+			await this.generatePhotoWithTitle(req, res);
 		});
 		return this.router;
 	}
 
-	async postRoute(req, res) {
+	async generatePhotoWithTitle(req, res) {
 		const prompt = req.body.prompt || "";
 		const size = req.body.size || "1024x1024";
 		const n = req.body.n || 1;
